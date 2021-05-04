@@ -1,0 +1,16 @@
+{
+  "name": "fes-entrance-api",
+  "version": "1.0.0",
+  "description": "API Server for Fes-Entrance",
+  "main": "index.js",
+  "scripts": {
+    "test": "cross-env PORT=5525 node ./index.js"
+  },
+  "author": "Bun133 <bun133.work@gmail.com> (https://twitter.com/bun133_)",
+  "license": "MPL-2.0",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cross-env": "^7.0.3",
+    "express": "^4.17.1"
+  }
+}
