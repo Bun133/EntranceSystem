@@ -52,11 +52,14 @@ function getSectionDataField(fieldName, sectionName) {
 }
 
 function checkSection(sectionName) {
-    return loader.syncSections().some(value => value['DisplayName'] === sectionName);
+    let sections = loader.syncSections().filter(value => value['DisplayName'] === sectionName)
+    if (sections.length === 1) return true
+    else if (sections.length === 0) return false
+    return undefined
 }
 
 function isOnlyOnceSection(sectionName) {
-    if (!checkSection(sectionName)) return false
+    if (!checkSection(sectionName) || checkSection(sectionName) === undefined) return false
     let sections = loader.syncSections().filter(value => value['DisplayName'] === sectionName)
     if (sections.length === 1) {
         let section = sections[0]
@@ -101,7 +104,12 @@ function isAlreadyEnteredOnlyOnceSection(customerID, sectionName) {
 
 function checkIn(id, sectionName) {
     let check = checkSection(sectionName)
-    if (!check) {
+    if (check === undefined) {
+        return {
+            'Status': 'ERROR',
+            'Message': 'Duplicated Section! SectionName:' + sectionName
+        }
+    } else if (!check) {
         return {
             'Status': 'ERROR',
             'Message': 'No Such Section is registered! SectionName:' + sectionName
@@ -139,10 +147,18 @@ function checkIn(id, sectionName) {
             }
         }
     } else if (customer.length === 1) {
-        if (!customer[0]['Sections'].includes(sectionName)) {
+        if (!customer[0]['Sections'].map(value => value['SectionName']).includes(sectionName)) {
             return {
                 'Status': 'ERROR',
                 'Message': 'The Customer Can\'t go into this section.'
+            }
+        }
+
+        let section = customer[0]['Sections'].filter(value => value['SectionName'].includes(sectionName))[0]
+        if(!section['TimeFunction']){
+            return {
+                'Status': 'ERROR',
+                'Message': 'The Customer Can\'t go into this section. During this Time.'
             }
         }
 
@@ -189,7 +205,12 @@ function checkIn(id, sectionName) {
 
 function checkOut(id, sectionName) {
     let check = checkSection(sectionName)
-    if (!check) {
+    if (check === undefined) {
+        return {
+            'Status': 'ERROR',
+            'Message': 'Duplicated Section! SectionName:' + sectionName
+        }
+    } else if (!check) {
         return {
             'Status': 'ERROR',
             'Message': 'No Such Section is registered! SectionName:' + sectionName

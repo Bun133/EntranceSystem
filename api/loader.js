@@ -10,26 +10,27 @@
 // Display Name:Name that will be shown
 // QRID:Data contained Customer's ticket or something like that
 // Day:Which day the customer have right to attend
-// Section:Which section the customer can go into
+// Sections:Which section the customer can go into
+// Sections.TimeFunction: if the customer go into depending time or other reason,
 function syncCustomers() {
     return [
         {
             'DisplayName': 'Dummy1',
             'QRID': '0001',
             'Day': [1],
-            'Sections':['Section1','Section2']
+            'Sections': [{'SectionName': 'Section1','TimeFunction':true}, {'SectionName': 'Section2','TimeFunction':true}]
         },
         {
             'DisplayName': 'Dummy2',
             'QRID': '0002',
             'Day': [1],
-            'Sections':['Section1']
+            'Sections': [{'SectionName': 'Section1','TimeFunction':true}]
         },
         {
             'DisplayName': 'Dummy3',
             'QRID': '0003',
             'Day': [2],
-            'Sections':['Section1']
+            'Sections': [{'SectionName': 'Section1','TimeFunction':false}]
         },
     ]
 }
@@ -57,12 +58,16 @@ function syncSections() {
     return [
         {
             'DisplayName': 'Section1',
-            'OnlyOnce' : false
+            'OnlyOnce': false
         },
         {
             'DisplayName': 'Section2',
-            'OnlyOnce' : true
+            'OnlyOnce': true
         },
+        {
+            'DisplayName': 'Section2',
+            'OnlyOnce': true
+        }
     ]
 }
 
