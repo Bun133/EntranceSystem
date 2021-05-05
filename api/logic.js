@@ -36,14 +36,14 @@ function addToArrayField(fieldName, data) {
 function removeFromArrayField(fieldName, data) {
     let d = loader.getField(fieldName)
     if (Array.isArray(d)) {
-        if (d.contains(data)) {
+        if (d.includes(data)) {
             d.remove(data)
             return true
         }
         return undefined
     } else {
-        console.log("ERROR:In removeFromArrayField,Field:" + fieldName + " is not Array Field!")
-        return false
+        console.log("WARN:In removeFromArrayField,Field:" + fieldName + " is not Array Field!")
+        return undefined
     }
 }
 
@@ -102,7 +102,15 @@ function isAlreadyEnteredOnlyOnceSection(customerID, sectionName) {
     }
 }
 
-function checkIn(id, sectionName) {
+function checkIn(customerId, checkData, sectionName) {
+    if (!loader.isValidTicket(customerId, checkData)) {
+        return {
+            'Status': 'ERROR',
+            'Message': 'Ticket is not valid!'
+        }
+    }
+
+
     let check = checkSection(sectionName)
     if (check === undefined) {
         return {
@@ -115,11 +123,9 @@ function checkIn(id, sectionName) {
             'Message': 'No Such Section is registered! SectionName:' + sectionName
         }
     }
-    let customers = loader.syncCustomers()
-    let customer = customers.filter(value => value['QRID'] === id)
+    let customer = loader.getCustomerData(customerId)
     if (customer.length === 0) {
-        let stuffs = loader.syncStuffs()
-        let stuff = stuffs.filter(value => value['QRID'] === id)
+        let stuff = loader.getStuffData(customerId)
         if (stuff.length === 0) {
             return {
                 'Status': 'ERROR',
@@ -127,7 +133,7 @@ function checkIn(id, sectionName) {
             }
         } else if (stuff.length === 1) {
             let data = {
-                'QRID': id,
+                'QRID': customerId,
                 'Time': Date.now().toLocaleString()
             }
             let add = addToArrayField(getSectionDataField(CheckedInCustomerField, sectionName), data)
@@ -141,7 +147,7 @@ function checkIn(id, sectionName) {
                 'Data': data
             }
         } else {
-            console.log("ERROR:In checkIn ID:" + id + " Section:" + sectionName + " More than 1 Stuff is matched!")
+            console.log("ERROR:In checkIn ID:" + customerId + " Section:" + sectionName + " More than 1 Stuff is matched!")
             return {
                 'Status': 'INTERNAL ERROR'
             }
@@ -155,7 +161,7 @@ function checkIn(id, sectionName) {
         }
 
         let section = customer[0]['Sections'].filter(value => value['SectionName'].includes(sectionName))[0]
-        if(!section['TimeFunction']){
+        if (!section['TimeFunction']) {
             return {
                 'Status': 'ERROR',
                 'Message': 'The Customer Can\'t go into this section. During this Time.'
@@ -176,7 +182,7 @@ function checkIn(id, sectionName) {
 
         if (customer[0]['Day'].includes(loader.getCurrentDate())) {
             let data = {
-                'QRID': id,
+                'QRID': customerId,
                 'Time': Date.now().toLocaleString()
             }
             let add = addToArrayField(getSectionDataField(CheckedInCustomerField, sectionName), data)
@@ -196,14 +202,22 @@ function checkIn(id, sectionName) {
             }
         }
     } else {
-        console.log("ERROR:In checkIn ID:" + id + " Section:" + sectionName + " More than 1 Customer is matched!")
+        console.log("ERROR:In checkIn ID:" + customerId + " Section:" + sectionName + " More than 1 Customer is matched!")
         return {
             'Status': 'INTERNAL ERROR'
         }
     }
 }
 
-function checkOut(id, sectionName) {
+function checkOut(customerId, checkData, sectionName) {
+    if (!loader.isValidTicket(customerId, checkData)) {
+        return {
+            'Status': 'ERROR',
+            'Message': 'Ticket is not valid!'
+        }
+    }
+
+
     let check = checkSection(sectionName)
     if (check === undefined) {
         return {
@@ -216,11 +230,9 @@ function checkOut(id, sectionName) {
             'Message': 'No Such Section is registered! SectionName:' + sectionName
         }
     }
-    let customers = loader.syncCustomers()
-    let customer = customers.filter(value => value['QRID'] === id)
+    let customer = loader.getCustomerData(customerId)
     if (customer.length === 0) {
-        let stuffs = loader.syncStuffs()
-        let stuff = stuffs.filter(value => value['QRID'] === id)
+        let stuff = loader.getStuffData(customerId)
         if (stuff.length === 0) {
             return {
                 'Status': 'ERROR',
@@ -228,7 +240,7 @@ function checkOut(id, sectionName) {
             }
         } else if (stuff.length === 1) {
             let data = {
-                'QRID': id,
+                'QRID': customerId,
                 'Time': Date.now().toLocaleString()
             }
             let add = addToArrayField(getSectionDataField(CheckedOutCustomerField, sectionName), data)
@@ -242,14 +254,14 @@ function checkOut(id, sectionName) {
                 'Data': data
             }
         } else {
-            console.log("ERROR:In checkIn ID:" + id + " Section:" + sectionName + " More than 1 Stuff is matched!")
+            console.log("ERROR:In checkIn ID:" + customerId + " Section:" + sectionName + " More than 1 Stuff is matched!")
             return {
                 'Status': 'INTERNAL ERROR'
             }
         }
     } else {
         let data = {
-            'QRID': id,
+            'QRID': customerId,
             'Time': Date.now().toLocaleString()
         }
         let remove = removeFromArrayField(getSectionDataField(CheckedInCustomerField, sectionName), data)

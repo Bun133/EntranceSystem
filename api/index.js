@@ -11,10 +11,18 @@ app.use(bodyParser.json());
 
 var port = process.env.PORT || 3000; // port番号を指定
 
-app.get('/api/checkin/:id/:section', function (req, res) {
+app.get('/api/checkin/:id/:check/:section', function (req, res) {
     let id = req.params.id
+    let check = req.params.check
     let section = req.params.section
-    res.json(logic.checkIn(id, section))
+    res.json(logic.checkIn(id, check, section))
+});
+
+app.get('/api/checkout/:id/:check/:section', function (req, res) {
+    let id = req.params.id
+    let check = req.params.check
+    let section = req.params.section
+    res.json(logic.checkOut(id, check, section))
 });
 
 app.get('/api/sections/', (req, res) => {
@@ -31,7 +39,12 @@ app.get('/api/sections/:section', (req, res) => {
 
 app.get('/api/list/checkin/:section', ((req, res) => {
     let section = req.params.section
-   res.json(logic.getCheckedInCustomersInSection(section))
+    res.json(logic.getCheckedInCustomersInSection(section))
+}))
+
+app.get('/api/list/checkout/:section', ((req, res) => {
+    let section = req.params.section
+    res.json(logic.getCheckedOutCustomersInSection(section))
 }))
 
 //サーバ起動

@@ -18,23 +18,38 @@ function syncCustomers() {
             'DisplayName': 'Dummy1',
             'QRID': '0001',
             'Day': [1],
-            'Sections': [{'SectionName': 'Section1','TimeFunction':true}, {'SectionName': 'Section2','TimeFunction':true}]
+            'Sections': [
+                {
+                    'SectionName': 'Section1',
+                    'TimeFunction': true
+                },
+                {
+                    'SectionName': 'Section2',
+                    'TimeFunction': true
+                }
+            ]
         },
         {
             'DisplayName': 'Dummy2',
             'QRID': '0002',
             'Day': [1],
-            'Sections': [{'SectionName': 'Section1','TimeFunction':true}]
+            'Sections': [{'SectionName': 'Section1', 'TimeFunction': true}]
         },
         {
             'DisplayName': 'Dummy3',
             'QRID': '0003',
             'Day': [2],
-            'Sections': [{'SectionName': 'Section1','TimeFunction':false}]
+            'Sections': [{'SectionName': 'Section1', 'TimeFunction': false}]
         },
     ]
 }
 
+// Get Customer Data from customerID
+//
+// Return Customer Data or Undefined
+function getCustomerData(customerID){
+    return syncCustomers().filter(value => value['QRID'] === customerID)
+}
 
 // Returns List of Stuff Json
 // Default is Dummy Data
@@ -47,6 +62,13 @@ function syncStuffs() {
         'DisplayName': 'DummyStuff1',
         'QRID': 'STUFF1'
     }]
+}
+
+// Get Stuff Data
+//
+// Return Stuff Data or Undefined
+function getStuffData(stuffId){
+    return syncStuffs().filter(value => value['QRID'] === stuffId)
 }
 
 // Returns List of Sections
@@ -108,4 +130,15 @@ function getCurrentDate() {
     return 1
 }
 
-module.exports = {syncCustomers, syncStuffs, syncSections, saveField, getField, getCurrentDate}
+// This method is to auth/check the customer ticket is valid!
+//
+// Needed Method:
+// Return the customer ticket is valid
+//
+// Dummy:
+// return checkData === undefined || checkData === ""
+function isValidTicket(customerID, checkData) {
+    return checkData === undefined || checkData === "" || checkData === "DUMMY"
+}
+
+module.exports = {syncCustomers, syncStuffs, syncSections, saveField, getField, getCurrentDate, isValidTicket,getCustomerData,getStuffData}
