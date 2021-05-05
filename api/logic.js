@@ -52,7 +52,7 @@ function getSectionDataField(fieldName, sectionName) {
 }
 
 function checkSection(sectionName) {
-    let sections = loader.syncSections().filter(value => value['DisplayName'] === sectionName)
+    let sections = loader.getSectionsData(sectionName)
     if (sections.length === 1) return true
     else if (sections.length === 0) return false
     return undefined
@@ -60,7 +60,7 @@ function checkSection(sectionName) {
 
 function isOnlyOnceSection(sectionName) {
     if (!checkSection(sectionName) || checkSection(sectionName) === undefined) return false
-    let sections = loader.syncSections().filter(value => value['DisplayName'] === sectionName)
+    let sections = loader.getSectionsData(sectionName)
     if (sections.length === 1) {
         let section = sections[0]
         return section["OnlyOnce"]

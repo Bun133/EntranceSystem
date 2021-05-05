@@ -93,6 +93,10 @@ function syncSections() {
     ]
 }
 
+function getSectionsData(sectionName){
+    return syncSections().filter(value => value['DisplayName'] === sectionName)
+}
+
 //DUMMY
 let dummyDataMap = new Map()
 
@@ -141,4 +145,4 @@ function isValidTicket(customerID, checkData) {
     return checkData === undefined || checkData === "" || checkData === "DUMMY"
 }
 
-module.exports = {syncCustomers, syncStuffs, syncSections, saveField, getField, getCurrentDate, isValidTicket,getCustomerData,getStuffData}
+module.exports = {syncCustomers, syncStuffs, syncSections, saveField, getField, getCurrentDate, isValidTicket,getCustomerData,getStuffData,getSectionsData}
